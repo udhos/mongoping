@@ -12,20 +12,17 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/udhos/boilerplate/secret"
-	"go.opentelemetry.io/otel/trace"
 	"gopkg.in/yaml.v3"
 )
 
-const version = "0.1.0"
+const version = "1.0.0"
 
 type application struct {
 	me            string
 	conf          config
 	targets       []target
-	server        *http.Server
 	serverMetrics *http.Server
 	serverHealth  *http.Server
-	tracer        trace.Tracer
 	met           *metrics
 }
 
