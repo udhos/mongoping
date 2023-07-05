@@ -14,7 +14,7 @@ Update files from repo:
 Search mongoping:
 
     helm search repo mongoping -l --version ">=0.0.0"
-    NAME           	    CHART VERSION	APP VERSION	DESCRIPTION
+    NAME               	CHART VERSION	APP VERSION	DESCRIPTION
     mongoping/mongoping	0.1.0        	0.1.0      	Install mongoping helm chart into kubernetes.
 
 To install the charts:
