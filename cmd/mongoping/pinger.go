@@ -26,13 +26,13 @@ func pingTarget(i, max int, t target, met *metrics, timeout time.Duration, debug
 
 	log.Printf("%s: name=%s URL=%s timeout=%v", me, t.Name, t.URI, timeout)
 
-	outcome := "unknown"
 	var errPing error
 
 	begin := time.Now()
 
 	defer func() {
 		elap := time.Since(begin)
+		var outcome string
 		if errPing == nil {
 			outcome = "success"
 		} else {
