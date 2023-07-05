@@ -1,0 +1,9 @@
+- name: "mongo1"
+  uri: "mongodb://localhost:27017"
+  #tls_ca_file: ca-bundle.pem
+- name: "mongo2"
+  uri: "mongodb://localhost:27018"
+  user: user2
+  pass: aws-parameterstore:us-east-1:mongo_pass_user2 # Retrieve from parameter store
+  role_arn: arn:aws:iam::100010001000:role/admin
+  #tls_ca_file: ca-bundle.pem
