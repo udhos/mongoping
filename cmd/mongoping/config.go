@@ -5,7 +5,6 @@ import "time"
 type config struct {
 	secretRoleArn         string
 	targets               string
-	jaegerURL             string
 	interval              time.Duration
 	timeout               time.Duration
 	metricsAddr           string
