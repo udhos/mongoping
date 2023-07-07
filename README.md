@@ -30,6 +30,8 @@ Config file is defined by env var `TARGETS=targets.yaml`.
 ```
 $ cat targets.yaml
 - name: "mongo1"
+  cmd: hello # "" or hello
+  database: admin # command hello requires database
   uri: "mongodb://localhost:27017"
   #tls_ca_file: ca-bundle.pem
 - name: "mongo2"

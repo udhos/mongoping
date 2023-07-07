@@ -2,6 +2,18 @@ apiVersion: v1
 entries:
   mongoping:
   - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2023-07-07T15:56:29.458184169-03:00"
+    description: Install mongoping helm chart into kubernetes.
+    digest: e4ef456e4995be59a9d2765de8d7131ff59b650de45585b4eca842205a9f0cfa
+    name: mongoping
+    sources:
+    - https://github.com/udhos/mongoping
+    type: application
+    urls:
+    - https://udhos.github.io/mongoping/mongoping-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2023-07-05T15:13:49.85732752-03:00"
     description: Install mongoping helm chart into kubernetes.
@@ -25,4 +37,4 @@ entries:
     urls:
     - https://udhos.github.io/mongoping/mongoping-0.1.0.tgz
     version: 0.1.0
-generated: "2023-07-05T15:13:49.856345949-03:00"
+generated: "2023-07-07T15:56:29.43407122-03:00"

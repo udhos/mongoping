@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/udhos/mongodbclient/mongodbclient"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func pinger(app *application) {
@@ -26,7 +28,7 @@ func pinger(app *application) {
 
 func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, timeout time.Duration, debug bool) {
 
-	me := fmt.Sprintf("pingTarget[%d/%d]", i+1, max)
+	me := fmt.Sprintf("pingTarget[%d/%d] cmd=[%s]", i+1, max, t.Cmd)
 
 	log.Printf("%s: name=%s URL=%s timeout=%v", me, t.Name, t.URI, timeout)
 
@@ -71,6 +73,22 @@ func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, tim
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
+
+	if t.Cmd == "hello" {
+		//
+		// special case "hello"
+		//
+		db := clients[i].Database(t.Database)
+		command := bson.D{{Key: "hello"}}
+		opts := options.RunCmd()
+		var result bson.M
+		errPing = db.RunCommand(ctx, command, opts).Decode(&result)
+		log.Printf("%s: name=%s URL=%s hello result: %v",
+			me, t.Name, t.URI, result)
+		return
+	}
+
+	// default to "ping"
 
 	errPing = clients[i].Ping(ctx, nil)
 }

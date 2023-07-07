@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const version = "1.0.1"
+const version = "1.1.0"
 
 type application struct {
 	me            string
@@ -29,6 +29,8 @@ type application struct {
 type target struct {
 	Name      string `yaml:"name"`
 	URI       string `yaml:"uri"`
+	Cmd       string `yaml:"cmd"`
+	Database  string `yaml:"database"` // command hello requires database
 	User      string `yaml:"user"`
 	Pass      string `yaml:"pass"`
 	TLSCaFile string `yaml:"tls_ca_file"`
