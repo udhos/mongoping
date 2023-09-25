@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const version = "1.1.3"
+const version = "1.1.4"
 
 type application struct {
 	me            string
