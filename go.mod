@@ -4,7 +4,7 @@ go 1.21.6
 
 require (
 	github.com/prometheus/client_golang v1.18.0
-	github.com/udhos/boilerplate v1.2.1
+	github.com/udhos/boilerplate v1.2.2
 	github.com/udhos/mongodbclient v1.0.3
 	go.mongodb.org/mongo-driver v1.13.1
 	gopkg.in/yaml.v3 v3.0.1

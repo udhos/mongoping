@@ -89,8 +89,8 @@ github.com/prometheus/procfs v0.12.0/go.mod h1:pcuDEFsWDnvcgNzo4EEweacyhjeA9Zk3c
 github.com/rogpeppe/go-internal v1.11.0 h1:cWPaGQEPrBb5/AsnsZesgZZ9yb1OQ+GOISoDNXVBh4M=
 github.com/rogpeppe/go-internal v1.11.0/go.mod h1:ddIwULY96R17DhadqLgMfk9H9tvdUzkipdSkR5nkCZA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
-github.com/udhos/boilerplate v1.2.1 h1:y68gFP0FvCR/9rI7oK4Tokl6YEyBdTaFVwkz2fEloQQ=
-github.com/udhos/boilerplate v1.2.1/go.mod h1:Z9LbzyYSac0OlAKcN+bvkhndjhuigyXicVhRdUxF54s=
+github.com/udhos/boilerplate v1.2.2 h1:CrO8ybSBJ96g0L6r0Cu5UL2RzzA/TNFgqe25LMyONcw=
+github.com/udhos/boilerplate v1.2.2/go.mod h1:dQBzD+sFLeJc9PJoSEtSHYi88Uq4B5qYS+tMzXGt1eM=
 github.com/udhos/mongodbclient v1.0.3 h1:thYkwdzydLbFInK9Dhb0r7HOtSnRSRJD6HLNxbHtEI8=
 github.com/udhos/mongodbclient v1.0.3/go.mod h1:CcMfQJ2gNR1E/kbvA0LnwOXUSntKVCSCfvkhd7SbvaM=
 github.com/xdg-go/pbkdf2 v1.0.0 h1:Su7DPu48wXMwC3bs7MCNG+z4FhcyEuz5dlvchbq0B0c=
