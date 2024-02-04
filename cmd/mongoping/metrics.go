@@ -2,20 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
-
-func serveMetrics(addr, path string) {
-	const me = "serveMetrics"
-	log.Printf("%s: starting metrics server at: %s %s", me, addr, path)
-	http.Handle(path, promhttp.Handler())
-	err := http.ListenAndServe(addr, nil)
-	log.Fatalf("%s: ListenAndServe error: %v", me, err)
-}
 
 type metrics struct {
 	latency *prometheus.HistogramVec
