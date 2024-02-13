@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const version = "1.1.8"
+const version = "1.1.9"
 
 type application struct {
 	me            string
@@ -107,7 +107,7 @@ func main() {
 			Handler: mux,
 		}
 
-		mux.HandleFunc(app.conf.healthPath, func(w http.ResponseWriter, r *http.Request) {
+		mux.HandleFunc(app.conf.healthPath, func(w http.ResponseWriter, _ /*r*/ *http.Request) {
 			http.Error(w, "health ok", 200)
 		})
 
