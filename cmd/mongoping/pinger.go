@@ -21,7 +21,9 @@ func pinger(app *application) {
 		for i, t := range app.targets {
 			go pingTarget(clients, i, len(app.targets), t, app.met, app.conf.timeout, app.conf.debug)
 		}
-		log.Printf("%s: sleeping for %v", me, app.conf.interval)
+		if app.conf.debug {
+			log.Printf("%s: sleeping for %v", me, app.conf.interval)
+		}
 		time.Sleep(app.conf.interval)
 	}
 }
@@ -30,7 +32,9 @@ func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, tim
 
 	me := fmt.Sprintf("pingTarget[%d/%d] cmd=[%s]", i+1, max, t.Cmd)
 
-	log.Printf("%s: name=%s URL=%s timeout=%v", me, t.Name, t.URI, timeout)
+	if debug {
+		log.Printf("%s: name=%s URL=%s timeout=%v", me, t.Name, t.URI, timeout)
+	}
 
 	var errPing error
 
@@ -41,8 +45,10 @@ func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, tim
 		var outcome string
 		if errPing == nil {
 			outcome = "success"
-			log.Printf("%s: name=%s URL=%s elapsed=%v outcome=%s",
-				me, t.Name, t.URI, elap, outcome)
+			if debug {
+				log.Printf("%s: name=%s URL=%s elapsed=%v outcome=%s",
+					me, t.Name, t.URI, elap, outcome)
+			}
 		} else {
 			outcome = "error"
 			log.Printf("%s: name=%s URL=%s elapsed=%v outcome=%s error:%v",
@@ -83,8 +89,10 @@ func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, tim
 		opts := options.RunCmd()
 		var result bson.M
 		errPing = db.RunCommand(ctx, command, opts).Decode(&result)
-		log.Printf("%s: name=%s URL=%s hello result: %v",
-			me, t.Name, t.URI, result)
+		if debug && errPing == nil {
+			log.Printf("%s: name=%s URL=%s hello result: %v",
+				me, t.Name, t.URI, result)
+		}
 		return
 	}
 
