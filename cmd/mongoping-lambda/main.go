@@ -80,6 +80,13 @@ func HandleRequest(_ /*ctx*/ context.Context, event *pingEvent) (string, error) 
 
 	log.Printf("targets: %d", len(targets))
 
+	//
+	// grow clients if needed
+	//
+	if n := len(targets) - len(clients); n > 0 {
+		clients = append(clients, make([]*mongo.Client, n)...)
+	}
+
 	var wg sync.WaitGroup
 
 	for i, t := range targets {

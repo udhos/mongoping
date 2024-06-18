@@ -1,0 +1,24 @@
+# STEP 1 build executable binary
+
+FROM golang:1.22.4-alpine3.20 as builder
+
+RUN apk update
+RUN apk add git
+
+# Create appuser on builder image
+RUN adduser -D -g '' appuser
+
+COPY ./cmd/ /tmp/app/cmd
+COPY ./internal/ /tmp/app/internal
+COPY go.* /tmp/app/
+WORKDIR /tmp/app
+RUN go mod tidy
+RUN go env -w CGO_ENABLED=0
+RUN go build -tags lambda.norpc -o /tmp/mongoping-lambda github.com/udhos/mongoping/cmd/mongoping-lambda
+
+#
+# STEP 2 build a small image
+#
+FROM public.ecr.aws/lambda/provided:al2023
+COPY --from=builder /tmp/mongoping-lambda /bin/mongoping-lambda
+ENTRYPOINT ["/bin/mongoping-lambda"]
