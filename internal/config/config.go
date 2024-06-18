@@ -62,6 +62,9 @@ type Target struct {
 func LoadTargets(targetsFile, sessionName, secretRoleArn string) []Target {
 	const me = "loadTargets"
 
+	log.Printf("%s: file=%s session=%s role=%s", me,
+		targetsFile, sessionName, secretRoleArn)
+
 	var targets []Target
 
 	buf, errRead := os.ReadFile(targetsFile)

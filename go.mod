@@ -3,6 +3,7 @@ module github.com/udhos/mongoping
 go 1.22.4
 
 require (
+	github.com/aws/aws-lambda-go v1.47.0
 	github.com/prometheus/client_golang v1.18.0
 	github.com/udhos/boilerplate v1.2.8
 	github.com/udhos/mongodbclient v1.0.7
