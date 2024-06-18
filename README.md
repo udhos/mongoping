@@ -3,6 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/udhos/mongoping.svg)](https://pkg.go.dev/github.com/udhos/mongoping)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/mongoping)](https://artifacthub.io/packages/search?repo=mongoping)
 [![Docker Pulls mongoping](https://img.shields.io/docker/pulls/udhos/mongoping)](https://hub.docker.com/r/udhos/mongoping)
+[![Docker Pulls mongoping-lambda](https://img.shields.io/docker/pulls/udhos/mongoping-lambda)](https://hub.docker.com/r/udhos/mongoping-lambda)
 
 # mongoping
 
