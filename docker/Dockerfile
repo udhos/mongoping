@@ -1,6 +1,6 @@
 # STEP 1 build executable binary
 
-FROM golang:1.22.4-alpine3.19 as builder
+FROM golang:1.22.4-alpine3.20 as builder
 
 RUN apk update
 RUN apk add git
@@ -21,7 +21,7 @@ RUN go build -o /tmp/mongoping github.com/udhos/mongoping/cmd/mongoping
 #
 # curl: https://security.alpinelinux.org/srcpkg/curl
 #
-FROM alpine:3.19.1
+FROM alpine:3.20.0
 COPY --from=builder /tmp/mongoping /bin/mongoping
 #RUN apk add curl=8.1.2-r0 libcrypto3=3.1.0-r4 libssl3=3.1.0-r4
 RUN apk update
