@@ -1,4 +1,5 @@
-package main
+// Package ping implements the pinger.
+package ping
 
 import (
 	"context"
@@ -7,30 +8,17 @@ import (
 	"time"
 
 	"github.com/udhos/mongodbclient/mongodbclient"
+	"github.com/udhos/mongoping/internal/config"
+	"github.com/udhos/mongoping/internal/metrics"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func pinger(app *application) {
-	const me = "pinger"
+// Ping pings one target.
+func Ping(clients []*mongo.Client, i, max int, t config.Target, met metrics.Metrics, timeout time.Duration, debug bool) {
 
-	clients := make([]*mongo.Client, len(app.targets))
-
-	for {
-		for i, t := range app.targets {
-			go pingTarget(clients, i, len(app.targets), t, app.met, app.conf.timeout, app.conf.debug)
-		}
-		if app.conf.debug {
-			log.Printf("%s: sleeping for %v", me, app.conf.interval)
-		}
-		time.Sleep(app.conf.interval)
-	}
-}
-
-func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, timeout time.Duration, debug bool) {
-
-	me := fmt.Sprintf("pingTarget[%d/%d] cmd=[%s]", i+1, max, t.Cmd)
+	me := fmt.Sprintf("Ping[%d/%d] cmd=[%s]", i+1, max, t.Cmd)
 
 	if debug {
 		log.Printf("%s: name=%s URL=%s timeout=%v", me, t.Name, t.URI, timeout)
@@ -54,7 +42,7 @@ func pingTarget(clients []*mongo.Client, i, max int, t target, met *metrics, tim
 			log.Printf("%s: name=%s URL=%s elapsed=%v outcome=%s error:%v",
 				me, t.Name, t.URI, elap, outcome, errPing)
 		}
-		met.recordLatency(t.Name, t.URI, outcome, elap)
+		met.RecordLatency(t.Name, t.URI, outcome, elap)
 	}()
 
 	if clients[i] == nil {

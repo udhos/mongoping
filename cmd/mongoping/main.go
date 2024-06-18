@@ -9,32 +9,22 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/udhos/boilerplate/secret"
-	"gopkg.in/yaml.v3"
+	"github.com/udhos/mongoping/internal/config"
+	"github.com/udhos/mongoping/internal/metrics"
+	"github.com/udhos/mongoping/internal/ping"
+	"go.mongodb.org/mongo-driver/mongo"
 )
-
-const version = "1.1.12"
 
 type application struct {
 	me            string
-	conf          config
-	targets       []target
+	conf          config.Config
+	targets       []config.Target
 	serverMetrics *http.Server
 	serverHealth  *http.Server
-	met           *metrics
-}
-
-type target struct {
-	Name      string `yaml:"name"`
-	URI       string `yaml:"uri"`
-	Cmd       string `yaml:"cmd"`
-	Database  string `yaml:"database"` // command hello requires database
-	User      string `yaml:"user"`
-	Pass      string `yaml:"pass"`
-	TLSCaFile string `yaml:"tls_ca_file"`
-	RoleArn   string `yaml:"role_arn"`
+	met           metrics.Metrics
 }
 
 func longVersion(me string) string {
@@ -59,7 +49,7 @@ func main() {
 	me := filepath.Base(os.Args[0])
 
 	{
-		v := longVersion(me + " version=" + version)
+		v := longVersion(me + " version=" + config.Version)
 		if showVersion {
 			fmt.Println(v)
 			return
@@ -69,28 +59,28 @@ func main() {
 
 	app := &application{
 		me:   me,
-		conf: getConfig(),
+		conf: config.GetConfig(),
 	}
 
-	app.targets = loadTargets(app.conf.targets, me, app.conf.secretRoleArn)
+	app.targets = config.LoadTargets(app.conf.Targets, me, app.conf.SecretRoleArn)
 
 	//
 	// start metrics server
 	//
 
 	{
-		app.met = newMetrics(app.conf.metricsNamespace, app.conf.metricsLatencyBuckets)
+		app.met = newMetricsPrometheus(app.conf.MetricsNamespace, app.conf.MetricsLatencyBuckets)
 
 		mux := http.NewServeMux()
 		app.serverMetrics = &http.Server{
-			Addr:    app.conf.metricsAddr,
+			Addr:    app.conf.MetricsAddr,
 			Handler: mux,
 		}
 
-		mux.Handle(app.conf.metricsPath, promhttp.Handler())
+		mux.Handle(app.conf.MetricsPath, promhttp.Handler())
 
 		go func() {
-			log.Printf("metrics server: listening on %s %s", app.conf.metricsAddr, app.conf.metricsPath)
+			log.Printf("metrics server: listening on %s %s", app.conf.MetricsAddr, app.conf.MetricsPath)
 			err := app.serverMetrics.ListenAndServe()
 			log.Fatalf("metrics server: exited: %v", err)
 		}()
@@ -103,16 +93,16 @@ func main() {
 	{
 		mux := http.NewServeMux()
 		app.serverHealth = &http.Server{
-			Addr:    app.conf.healthAddr,
+			Addr:    app.conf.HealthAddr,
 			Handler: mux,
 		}
 
-		mux.HandleFunc(app.conf.healthPath, func(w http.ResponseWriter, _ /*r*/ *http.Request) {
+		mux.HandleFunc(app.conf.HealthPath, func(w http.ResponseWriter, _ /*r*/ *http.Request) {
 			http.Error(w, "health ok", 200)
 		})
 
 		go func() {
-			log.Printf("health server: listening on %s %s", app.conf.healthAddr, app.conf.healthPath)
+			log.Printf("health server: listening on %s %s", app.conf.HealthAddr, app.conf.HealthPath)
 			err := app.serverHealth.ListenAndServe()
 			log.Fatalf("health server: exited: %v", err)
 		}()
@@ -127,45 +117,18 @@ func main() {
 	<-make(chan struct{}) // wait forever
 }
 
-func loadTargets(targetsFile, sessionName, secretRoleArn string) []target {
-	const me = "loadTargets"
+func pinger(app *application) {
+	const me = "pinger"
 
-	var targets []target
+	clients := make([]*mongo.Client, len(app.targets))
 
-	buf, errRead := os.ReadFile(targetsFile)
-	if errRead != nil {
-		log.Fatalf("%s: load targets: %s: %v",
-			me, targetsFile, errRead)
-	}
-
-	errYaml := yaml.Unmarshal(buf, &targets)
-	if errYaml != nil {
-		log.Fatalf("%s: parse targets yaml: %s: %v",
-			me, targetsFile, errYaml)
-	}
-
-	// get secret using global role
-	sec := secret.New(secret.Options{
-		RoleSessionName: sessionName,
-		RoleArn:         secretRoleArn,
-	})
-
-	for _, t := range targets {
-
-		if t.RoleArn != "" {
-			//
-			// non-empty per-target role overrides global role
-			//
-			s := secret.New(secret.Options{
-				RoleSessionName: sessionName,
-				RoleArn:         t.RoleArn,
-			})
-			t.Pass = s.Retrieve(t.Pass)
-			continue
+	for {
+		for i, t := range app.targets {
+			go ping.Ping(clients, i, len(app.targets), t, app.met, app.conf.Timeout, app.conf.Debug)
 		}
-
-		t.Pass = sec.Retrieve(t.Pass) // get secret using global role
+		if app.conf.Debug {
+			log.Printf("%s: sleeping for %v", me, app.conf.Interval)
+		}
+		time.Sleep(app.conf.Interval)
 	}
-
-	return targets
 }

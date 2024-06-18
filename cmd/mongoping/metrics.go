@@ -7,11 +7,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type metrics struct {
+type prometheusMetrics struct {
 	latency *prometheus.HistogramVec
 }
 
-func newMetrics(namespace string, latencyBuckets []float64) *metrics {
+func newMetricsPrometheus(namespace string, latencyBuckets []float64) *prometheusMetrics {
 	const me = "newMetrics"
 
 	//
@@ -36,13 +36,13 @@ func newMetrics(namespace string, latencyBuckets []float64) *metrics {
 	// all metrics
 	//
 
-	m := &metrics{
+	m := &prometheusMetrics{
 		latency: latency,
 	}
 
 	return m
 }
 
-func (m *metrics) recordLatency(target, uri, outcome string, latency time.Duration) {
+func (m *prometheusMetrics) RecordLatency(target, uri, outcome string, latency time.Duration) {
 	m.latency.WithLabelValues(target, uri, outcome).Observe(float64(latency) / float64(time.Second))
 }
