@@ -21,4 +21,5 @@ RUN go build -tags lambda.norpc -o /tmp/mongoping-lambda github.com/udhos/mongop
 #
 FROM public.ecr.aws/lambda/provided:al2023
 COPY --from=builder /tmp/mongoping-lambda /bin/mongoping-lambda
+COPY global-bundle.pem /etc/global-bundle.pem
 ENTRYPOINT ["/bin/mongoping-lambda"]

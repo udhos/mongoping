@@ -6,6 +6,9 @@ version=$(go run ./cmd/mongoping -version | awk '{ print $2 }' | awk -F= '{ prin
 
 echo version=$version
 
+rm -f global-bundle.pem
+wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+
 docker build --no-cache \
     -t udhos/$app:latest \
     -t udhos/$app:$version \

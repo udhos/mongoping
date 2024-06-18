@@ -94,6 +94,7 @@ func HandleRequest(_ /*ctx*/ context.Context, event *pingEvent) (string, error) 
 	var wg sync.WaitGroup
 
 	for i, t := range targets {
+		i, t := i, t
 		wg.Add(1)
 		go func() {
 			ping.Ping(clients, i, len(targets), t, app.met, app.conf.Timeout, app.conf.Debug)

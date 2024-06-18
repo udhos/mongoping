@@ -4,12 +4,14 @@
       "cmd": "hello",
       "database": "admin",
       "name": "mongo1",
+      "tls_ca_file": "/etc/global-bundle.pem",
       "uri": "mongodb://localhost:27017"
     },
     {
       "name": "mongo2",
       "pass": "aws-parameterstore:us-east-1:mongo_pass_user2",
       "role_arn": "arn:aws:iam::100010001000:role/admin",
+      "tls_ca_file": "/etc/global-bundle.pem",
       "uri": "mongodb://localhost:27018",
       "user": "user2"
     }
