@@ -21,3 +21,4 @@
 go.work
 charts-tmp
 docker-push.sh
+docker-push-lambda.sh

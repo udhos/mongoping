@@ -80,6 +80,10 @@ func HandleRequest(_ /*ctx*/ context.Context, event *pingEvent) (string, error) 
 
 	log.Printf("targets: %d", len(targets))
 
+	if len(targets) == 0 {
+		log.Fatalf("FATAL: targets: %d (at least 1 target is required)", len(targets))
+	}
+
 	//
 	// grow clients if needed
 	//
