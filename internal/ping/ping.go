@@ -16,9 +16,9 @@ import (
 )
 
 // Ping pings one target.
-func Ping(clients []*mongo.Client, i, max int, t config.Target, met metrics.Metrics, timeout time.Duration, debug bool) {
+func Ping(clients []*mongo.Client, i, targets int, t config.Target, met metrics.Metrics, timeout time.Duration, debug bool) {
 
-	me := fmt.Sprintf("Ping[%d/%d] cmd=[%s]", i+1, max, t.Cmd)
+	me := fmt.Sprintf("Ping[%d/%d] cmd=[%s]", i+1, targets, t.Cmd)
 
 	if debug {
 		log.Printf("%s: name=%s URL=%s timeout=%v", me, t.Name, t.URI, timeout)
