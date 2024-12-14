@@ -6,13 +6,14 @@ import (
 	"os"
 	"time"
 
+	"github.com/udhos/boilerplate/awsconfig"
 	"github.com/udhos/boilerplate/secret"
 	"github.com/udhos/mongoping/internal/env"
 	"gopkg.in/yaml.v3"
 )
 
 // Version is program version.
-const Version = "1.2.3"
+const Version = "1.2.4"
 
 // Config holds program configuration.
 type Config struct {
@@ -79,10 +80,14 @@ func LoadTargets(targetsFile, sessionName, secretRoleArn string) []Target {
 			me, targetsFile, errYaml)
 	}
 
+	awsConfOptions := awsconfig.Options{
+		RoleArn:         secretRoleArn,
+		RoleSessionName: sessionName,
+	}
+
 	// get secret using global role
 	sec := secret.New(secret.Options{
-		RoleSessionName: sessionName,
-		RoleArn:         secretRoleArn,
+		AwsConfigSource: &secret.AwsConfigSource{AwsConfigOptions: awsConfOptions},
 	})
 
 	for _, t := range targets {
@@ -91,9 +96,12 @@ func LoadTargets(targetsFile, sessionName, secretRoleArn string) []Target {
 			//
 			// non-empty per-target role overrides global role
 			//
-			s := secret.New(secret.Options{
-				RoleSessionName: sessionName,
+			awsConfOptions := awsconfig.Options{
 				RoleArn:         t.RoleArn,
+				RoleSessionName: sessionName,
+			}
+			s := secret.New(secret.Options{
+				AwsConfigSource: &secret.AwsConfigSource{AwsConfigOptions: awsConfOptions},
 			})
 			t.Pass = s.Retrieve(t.Pass)
 			continue
