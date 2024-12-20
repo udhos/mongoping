@@ -13,7 +13,7 @@ import (
 )
 
 // Version is program version.
-const Version = "1.2.4"
+const Version = "1.2.5"
 
 // Config holds program configuration.
 type Config struct {
