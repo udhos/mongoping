@@ -23,3 +23,5 @@ charts-tmp
 docker-push.sh
 docker-push-lambda.sh
 global-bundle.pem
+docker-push-datadog.sh
+orchestrion.tool.go

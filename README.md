@@ -86,3 +86,15 @@ See: https://udhos.github.io/mongoping/
     helm install my-mongoping ./charts/mongoping --values charts/mongoping/values.yaml
 
     helm list -A
+
+# Datadog
+
+Image tags suffixed with `-datadog` are instrumented with Datadog [Orchestrion](https://github.com/DataDog/orchestrion).
+
+See https://hub.docker.com/r/udhos/mongoping/tags
+
+## Example
+
+Install latest image instrumented with support for Datadog:
+
+    helm upgrade --install mongoping-dd ./charts/mongoping --set image.tag=latest-datadog
