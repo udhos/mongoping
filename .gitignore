@@ -18,7 +18,7 @@
 # vendor/
 
 # Go workspace file
-go.work
+go.work*
 charts-tmp
 docker-push.sh
 docker-push-lambda.sh

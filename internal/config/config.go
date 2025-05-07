@@ -13,7 +13,7 @@ import (
 )
 
 // Version is program version.
-const Version = "1.3.0"
+const Version = "1.3.1"
 
 // Config holds program configuration.
 type Config struct {
@@ -28,6 +28,9 @@ type Config struct {
 	HealthAddr            string
 	HealthPath            string
 	Debug                 bool
+	PrometheusEnabled     bool
+	DogstatsdEnabled      bool
+	DogstatsdDebug        bool
 }
 
 // GetConfig loads configuration.
@@ -39,11 +42,14 @@ func GetConfig() Config {
 		Timeout:               env.Duration("TIMEOUT", 5*time.Second),
 		MetricsAddr:           env.String("METRICS_ADDR", ":3000"),
 		MetricsPath:           env.String("METRICS_PATH", "/metrics"),
-		MetricsNamespace:      env.String("METRICS_NAMESPACE", ""),
+		MetricsNamespace:      env.String("METRICS_NAMESPACE", "ping"),
 		MetricsLatencyBuckets: env.Float64Slice("METRICS_BUCKETS_LATENCY", []float64{0.0001, 0.00025, 0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, .5, 1}),
 		HealthAddr:            env.String("HEALTH_ADDR", ":8888"),
 		HealthPath:            env.String("HEALTH_PATH", "/health"),
 		Debug:                 env.Bool("DEBUG", false),
+		PrometheusEnabled:     env.Bool("PROMETHEUS_ENABLED", true),
+		DogstatsdEnabled:      env.Bool("DOGSTATSD_ENABLED", true),
+		DogstatsdDebug:        env.Bool("DOGSTATSD_DEBUG", false),
 	}
 }
 

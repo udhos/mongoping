@@ -91,6 +91,9 @@ configMapProperties:
   HEALTH_ADDR: :8888
   HEALTH_PATH: /health
   DEBUG: "false"
+  PROMETHEUS_ENABLED: "true"
+  DOGSTATSD_ENABLED: "true"
+  DOGSTATSD_DEBUG: "false"
 
 configDir:
   targets.yaml: |

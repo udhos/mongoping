@@ -65,25 +65,31 @@ func main() {
 	app.targets = config.LoadTargets(app.conf.Targets, me, app.conf.SecretRoleArn)
 
 	//
-	// start metrics server
+	// metrics
 	//
 
 	{
-		app.met = newMetricsPrometheus(app.conf.MetricsNamespace, app.conf.MetricsLatencyBuckets)
+		app.met = newMetrics(app.conf.MetricsNamespace,
+			app.conf.MetricsLatencyBuckets, app.conf.PrometheusEnabled,
+			app.conf.DogstatsdEnabled, app.conf.DogstatsdDebug)
 
-		mux := http.NewServeMux()
-		app.serverMetrics = &http.Server{
-			Addr:    app.conf.MetricsAddr,
-			Handler: mux,
+		if app.conf.PrometheusEnabled {
+			//
+			// start prometheus metrics server
+			//
+			mux := http.NewServeMux()
+			app.serverMetrics = &http.Server{
+				Addr:    app.conf.MetricsAddr,
+				Handler: mux,
+			}
+			mux.Handle(app.conf.MetricsPath, promhttp.Handler())
+			go func() {
+				log.Printf("metrics server: listening on %s %s",
+					app.conf.MetricsAddr, app.conf.MetricsPath)
+				err := app.serverMetrics.ListenAndServe()
+				log.Fatalf("metrics server: exited: %v", err)
+			}()
 		}
-
-		mux.Handle(app.conf.MetricsPath, promhttp.Handler())
-
-		go func() {
-			log.Printf("metrics server: listening on %s %s", app.conf.MetricsAddr, app.conf.MetricsPath)
-			err := app.serverMetrics.ListenAndServe()
-			log.Fatalf("metrics server: exited: %v", err)
-		}()
 	}
 
 	//
@@ -102,7 +108,8 @@ func main() {
 		})
 
 		go func() {
-			log.Printf("health server: listening on %s %s", app.conf.HealthAddr, app.conf.HealthPath)
+			log.Printf("health server: listening on %s %s",
+				app.conf.HealthAddr, app.conf.HealthPath)
 			err := app.serverHealth.ListenAndServe()
 			log.Fatalf("health server: exited: %v", err)
 		}()
